@@ -29,4 +29,8 @@ app.get("/health", (c) => c.json({ status: "Oj8K" }));
 const port = 8000;
 console.log(`Server running on port ${port}`);
 
+Deno.cron("sample cron", "*/10 * * * * *", () => {
+  console.log("cron job executed every 10 seconds");
+});
+
 serve(app.fetch, { port });
