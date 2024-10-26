@@ -20,41 +20,13 @@ app.use("*", async (c, next) => {
   }
 });
 
-// Define a schema for user data
-const userSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-});
-
 // Routes
 app.get("/", (c) => c.json({ message: "Welcome to Deno + Hono API!" }));
 
-app.get("/health", (c) => c.json({ status: "OK" }));
-
-// Example protected route with schema validation
-app.post("/users", async (c) => {
-  const body = await c.req.json();
-  
-  try {
-    const validatedData = userSchema.parse(body);
-    // Here you would typically save to a database
-    return c.json({ 
-      message: "User created successfully",
-      user: validatedData 
-    }, 201);
-  } catch (error) {
-    return c.json({ error: error.errors }, 400);
-  }
-});
-
-// Example route with URL parameters
-app.get("/users/:id", (c) => {
-  const id = c.req.param("id");
-  return c.json({ message: `Fetching user ${id}` });
-});
+app.get("/health", (c) => c.json({ status: "Oj8K" }));
 
 // Start the server
-const port = parseInt(Deno.env.get("PORT") || "8000");
+const port = 8000;
 console.log(`Server running on port ${port}`);
 
 serve(app.fetch, { port });
