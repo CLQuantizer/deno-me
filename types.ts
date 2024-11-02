@@ -47,21 +47,6 @@ export const TradeSchema = z.object({
     timestamp: z.number(),
 });
 
-export function formatPriceLevel(level: PriceLevel) {
-    return {
-        price: level.price,
-        volume: level.orders.reduce((sum, order) => sum + order.quantity, 0),
-        orderCount: level.orders.length,
-        orders: level.orders.map(order => ({
-            id: order.id,
-            quantity: order.quantity,
-            timestamp: order.timestamp
-        }))
-    };
-}
-
-
-export type NewOrder = z.infer<typeof NewOrderSchema>;
 export type Order = z.infer<typeof OrderSchema>;
 export type PriceLevel = { price: number; orders: Order[] };
 export type Trade = z.infer<typeof TradeSchema>;
