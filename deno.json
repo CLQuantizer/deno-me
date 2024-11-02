@@ -1,18 +1,19 @@
 {
-    "tasks": {
-      "dev": "deno run --watch --allow-net --allow-env app.ts",
-      "start": "deno run --allow-net --allow-env app.ts",
-      "test": "deno test --allow-net"
-    },
-    "imports": {
-      "hono/": "https://deno.land/x/hono@v3.11.7/",
-      "zod": "https://deno.land/x/zod@v3.22.4/mod.ts"
-    },
-    "fmt": {
-      "options": {
-        "lineWidth": 100,
-        "indentWidth": 2,
-        "singleQuote": true
-      }
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-env app.ts",
+    "start": "deno run --allow-net --allow-env app.ts",
+    "test": "deno test --allow-net"
+  },
+  "imports": {
+    "@std/data-structures": "jsr:@std/data-structures@^1.0.4",
+    "hono/": "https://deno.land/x/hono@v3.11.7/",
+    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts"
+  },
+  "fmt": {
+    "options": {
+      "lineWidth": 100,
+      "indentWidth": 2,
+      "singleQuote": true
     }
   }
+}
