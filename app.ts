@@ -4,7 +4,7 @@ import { Hono } from "https://deno.land/x/hono@v3.11.7/mod.ts";
 import { logger } from "https://deno.land/x/hono@v3.11.7/middleware.ts";
 import { BuyTree, SellTree, Trades } from './context.ts';
 import { processOrder } from './me.ts';
-import {Order, Side, OrderStatus} from './types.ts';
+import {Order, Side, OrderStatus, NewOrderSchema} from './types.ts';
 
 // Initialize Hono
 const app = new Hono();
@@ -50,23 +50,27 @@ app.get("/trades", (c) => {
 app.post("/place", async (c) => {
   const body = await c.req.json();
 
-  // Validate required fields
-  if (!body.side || !body.price || !body.quantity) {
-    return c.json({ error: "Missing required fields: side, price, quantity" }, 400);
-  }
+  const result = NewOrderSchema.safeParse({
+    ...body,
+    userId: crypto.randomUUID(), // Generate userId here since it's required by schema
+    timestamp: Date.now() // Add timestamp since it's required by schema
+  });
 
-  // Validate side
-  if (![Side.BUY, Side.SELL].includes(body.side)) {
-    return c.json({ error: "Invalid side. Must be 'BUY' or 'SELL'" }, 400);
+  if (!result.success) {
+    return c.json({
+      error: "Validation failed",
+      details: result.error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      }))
+    }, 400);
   }
-
+  const newOrder = result.data;
   // Create new order
   const order: Order = {
+    ...newOrder,
     id: crypto.randomUUID(),
     userId: crypto.randomUUID(),
-    side: body.side,
-    price: body.price,
-    quantity: body.quantity,
     status: OrderStatus.OPEN,
     filledQuantity: 0,
     timestamp: Date.now()
