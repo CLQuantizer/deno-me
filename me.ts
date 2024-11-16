@@ -22,6 +22,13 @@ const matchOrder = (order: Order, oppositeBook: BinarySearchTree<PriceLevel>): O
     if (!bestPriceLevel) {
         return order;  // No matching price level found
     }
+    // if the price does not cross, return the order
+    if (order.side === Side.BUY && order.price < bestPriceLevel.price) {
+        return order;
+    }
+    if (order.side === Side.SELL && order.price > bestPriceLevel.price) {
+        return order;
+    }
     let remainingQuantity = order.quantity - order.filledQuantity;
     const currentPriceOrders = [...bestPriceLevel.orders];
 
