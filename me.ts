@@ -11,43 +11,43 @@ export const addOrderToBook = (order: Order, book: BinarySearchTree<PriceLevel>)
     } else {
         book.insert({ price: order.price, orders: [order] });
     }
-    const finalPriceLevel = book.find(priceLevel);
-    console.log("Final Price Level:", finalPriceLevel);
+    const finalPriceLvl = book.find(priceLevel);
+    console.log("Final Price Level:", finalPriceLvl);
 };
 
 // recursive function to match order
 const matchOrder = (order: Order, oppositeBook: BinarySearchTree<PriceLevel>): Order => {
     // Get the best matching price level
-    const bestPriceLevel = order.side === Side.BUY ? oppositeBook.min() : oppositeBook.max();
-    if (!bestPriceLevel) {
+    const bestPriceLvl = order.side === Side.BUY ? oppositeBook.min() : oppositeBook.max();
+    if (!bestPriceLvl) {
         return order;  // No matching price level found
     }
     // if the price does not cross, return the order
-    if (order.side === Side.BUY && order.price < bestPriceLevel.price) {
+    if (order.side === Side.BUY && order.price < bestPriceLvl.price) {
         return order;
     }
-    if (order.side === Side.SELL && order.price > bestPriceLevel.price) {
+    if (order.side === Side.SELL && order.price > bestPriceLvl.price) {
         return order;
     }
-    let remainingQuantity = order.quantity - order.filledQuantity;
-    const currentPriceOrders = [...bestPriceLevel.orders];
+    let remainingQty = order.quantity - order.filledQuantity;
+    const currentPriceOrders = [...bestPriceLvl.orders];
 
     // Process orders at this price level
-    while (remainingQuantity > 0 && currentPriceOrders.length > 0) {
+    while (remainingQty > 0 && currentPriceOrders.length > 0) {
         const matchingOrder = currentPriceOrders[0];
         const matchQuantity = Math.min(
-            remainingQuantity,
+            remainingQty,
             matchingOrder.quantity - matchingOrder.filledQuantity
         );
 
         // Update filled quantities
         matchingOrder.filledQuantity += matchQuantity;
         order.filledQuantity += matchQuantity;
-        remainingQuantity -= matchQuantity;
+        remainingQty -= matchQuantity;
 
         // Record the trade
         Trades.push({
-            price: bestPriceLevel.price,
+            price: bestPriceLvl.price,
             quantity: matchQuantity,
             timestamp: Date.now(),
             buyOrderId: order.side === Side.BUY ? order.id : matchingOrder.id,
@@ -64,9 +64,9 @@ const matchOrder = (order: Order, oppositeBook: BinarySearchTree<PriceLevel>): O
     }
 
     // Update the price level's orders
-    bestPriceLevel.orders = currentPriceOrders;
-    if (bestPriceLevel.orders.length === 0) {
-        oppositeBook.remove({ price: bestPriceLevel.price, orders: [] });
+    bestPriceLvl.orders = currentPriceOrders;
+    if (bestPriceLvl.orders.length === 0) {
+        oppositeBook.remove({ price: bestPriceLvl.price, orders: [] });
     }
 
     // Update incoming order status
@@ -78,7 +78,7 @@ const matchOrder = (order: Order, oppositeBook: BinarySearchTree<PriceLevel>): O
 
     // If order still has remaining quantity and there are more price levels,
     // continue matching
-    if (remainingQuantity > 0 && oppositeBook.size > 0) {
+    if (remainingQty > 0 && oppositeBook.size > 0) {
         return matchOrder(order, oppositeBook);
     }
 
