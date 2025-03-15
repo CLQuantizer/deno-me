@@ -53,7 +53,6 @@ const matchOrder = (order: Order, oppositeBook: BinarySearchTree<PriceLevel>): O
             buyOrderId: order.side === Side.BUY ? order.id : matchingOrder.id,
             sellOrderId: order.side === Side.SELL ? order.id : matchingOrder.id,
         });
-        console.log("Trades:", Trades);
 
         // Update order statuses
         if (matchingOrder.filledQuantity === matchingOrder.quantity) {
