@@ -30,8 +30,8 @@ app.get("/health", (c) => c.json({ status: "Oj8K" }));
 // Get order books state
 app.get("/books", (c) => {
   const formattedResponse = {
-    buyOrders: [...BuyTree.rnlValues()],
-    sellOrders: [...SellTree.rnlValues()],
+    buys: [...BuyTree.rnlValues()],
+    sells: [...SellTree.rnlValues()],
     timestamp: new Date().toISOString(),
     summary: {
       totalBuyOrders: BuyTree.size,
